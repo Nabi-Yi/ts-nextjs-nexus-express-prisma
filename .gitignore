@@ -1,0 +1,9 @@
+/.idea/
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml
+/.idea/workspace.xml
+/ts-nextjs-nexus-graphql-prisma.iml
+/server/node_modules/
+/.env
+/data/
