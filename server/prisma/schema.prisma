@@ -11,21 +11,104 @@ datasource db {
 }
 
 model User {
+  userId    Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  email     String @unique @db.VarChar(50)
+  firstName String @db.VarChar(20)
+  lastName  String @db.VarChar(20)
+  nickName  String @unique @db.VarChar(20)
+  password  String @db.Text
+  age       Int
+
+  post        Post[]
+  votePost    VotePost[]
+  voteComment VoteComment[]
+  comment     Comment[]
+  sub         Sub[]
+
+  @@index([email, nickName])
 }
 
-model Sub{
+model Sub {
+  subId     Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  title       String  @db.VarChar(50)
+  description String? @db.Text
+  bannerUrl   String? @db.VarChar(255)
+  imageUrl    String? @db.VarChar(255)
+
+  userId Int?
+  author User? @relation(fields: [userId], references: [userId], onDelete: SetNull)
+
+  post Post[]
+
+  @@index([title(sort: Asc)])
 }
 
-model Post{
+model Post {
+  postId    Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  title      String @db.VarChar(127)
+  slug       String @db.VarChar(255)
+  identifier String @db.VarChar(255)
+  body       String @db.Text
+
+  userId Int
+  author User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+
+  subId Int
+  sub   Sub @relation(fields: [subId], references: [subId], onDelete: Cascade)
+
+  comment  Comment[]
+  VotePost VotePost[]
+
+  @@index([createdAt(sort: Desc)])
 }
 
-model comment{
+model Comment {
+  commentId Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  slug       String @db.VarChar(255)
+  identifier String @db.VarChar(255)
+  body       String @db.Text
+
+  User   User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  userId Int
+  Post   Post @relation(fields: [postId], references: [postId], onDelete: Cascade)
+  postId Int
+
+  VoteComment VoteComment[]
 }
 
-model vote{
+model VotePost {
+  userId Int
+  postId Int
+  score  Int
 
+  user User @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  post Post @relation(fields: [postId], references: [postId], onDelete: Cascade)
+
+  @@id([userId, postId])
 }
 
+model VoteComment {
+  userId    Int
+  commentId Int
+  score     Int
+
+  user    User    @relation(fields: [userId], references: [userId], onDelete: Cascade)
+  comment Comment @relation(fields: [commentId], references: [commentId], onDelete: Cascade)
+
+  @@id([userId, commentId])
+}
+
+//get voteScore():number{
+// return this.votes?.reduce((memo, curt) => memo + (curt.value || 0),0) };
