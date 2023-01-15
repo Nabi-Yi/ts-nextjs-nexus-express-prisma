@@ -16,11 +16,11 @@ model User {
   updatedAt DateTime @updatedAt
 
   email     String @unique @db.VarChar(50)
-  firstName String @db.VarChar(20)
-  lastName  String @db.VarChar(20)
+  firstName String? @db.VarChar(20)
+  lastName  String? @db.VarChar(20)
   nickName  String @unique @db.VarChar(20)
   password  String @db.Text
-  age       Int
+  age       Int?
 
   post        Post[]
   votePost    VotePost[]
