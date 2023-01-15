@@ -1,18 +1,15 @@
 import { Request, Response, Router } from "express";
-import { prisma } from "../prisma";
+import { prisma } from "../../prisma";
 import { hash } from "bcryptjs";
-import { validateSignUp } from "../utils/validator";
-import { is } from "superstruct";
+import { validateSignUp } from "../../utils/validator";
+import { validate } from "superstruct";
 
-const register = async (req: Request, res: Response) => {
+export default async function signup(req: Request, res: Response) {
   try {
     let errors: any = {};
     const { email, password, nickName } = req.body;
 
-    if(!is({ email, password, nickName }, validateSignUp)){
-      errors.validation = "이메일이나 닉네임을 확인해주세요.";
-      return res.status(400).json(errors);
-    }
+    validate({ email, password, nickName }, validateSignUp);
 
     const emailCheck = await prisma.user.findFirst({
       where: {
@@ -34,8 +31,7 @@ const register = async (req: Request, res: Response) => {
 
     if (emailCheck)
       errors.email = "해당 이메일 주소로 이미 가입 되어 있습니다.";
-    if (nickNameCheck)
-      errors.nickName = "해당 닉네임은 이미 사용 중입니다.";
+    if (nickNameCheck) errors.nickName = "해당 닉네임은 이미 사용 중입니다.";
 
     if (Object.keys(errors).length > 0) {
       return res.status(400).json(errors);
@@ -54,14 +50,15 @@ const register = async (req: Request, res: Response) => {
     });
 
     return res.status(201).json(joinedUser);
-  } catch (e) {
-    console.log(e);
-    return res
-      .status(500)
-      .json({ message: "internal server error!", error: e });
+  } catch (error: any) {
+    console.log(error);
+    if (error.key) {
+      return res
+        .status(400)
+        .json({ validation: `${error.key}를 확인해주세요` });
+    }
+    return res.status(500).json({ error });
   }
-};
+}
 const router = Router();
-router.post("/register", register);
-
-export default router;
+router.post("/signup", signup);

@@ -17,6 +17,13 @@ export const validateSignUp = object({
     // lastName: size(string(), 2, 50),
 })
 
+export const validateLogin= object({
+    // string and a valid email address
+    email: refine(string(), 'email', (v) => isEmail.validate(v)),
+    // password is between 7 and 30 characters long
+    password: size(string(), 7, 30),
+})
+
 type validateSignUp = Omit<Prisma.UserCreateArgs['data'], 'id'>
 
 // Signup function
