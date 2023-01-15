@@ -32,7 +32,16 @@ export default async function login(req: Request, res: Response) {
       { expiresIn: "30d" }
     );
 
-    res.set("Set-Cookie", serialize("Authorization", token));
+    res.set(
+      "Set-Cookie",
+      serialize("Authorization", token, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "strict",
+        maxAge: 60 * 60 * 24 * 7,
+        path: "/",
+      })
+    );
     return res.status(200).json(token);
   } catch (error: any) {
     console.log(error);
@@ -50,4 +59,3 @@ export default async function login(req: Request, res: Response) {
 
 const router = Router();
 router.post("/login", login);
-
