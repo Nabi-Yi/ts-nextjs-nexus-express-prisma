@@ -8,7 +8,7 @@ export default async function userMiddleware(
 ) {
   try {
     const token = req.headers.authorization?.replace('Bearer ', '');
-    if (!token) return res.status(400).json({ error: "please login first" });
+    if (!token) return res.status(403).json({ error: "please login first" });
     const { userId }: any = verify(token, process.env.JWT_SECRET as string);
 
     res.locals.userId = userId;
