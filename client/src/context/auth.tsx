@@ -2,8 +2,9 @@
 유저 인증 관련 Context
  */
 
-import React, {createContext, useContext, useReducer} from "react";
+import React, { createContext, useContext, useEffect, useReducer } from "react";
 import { User } from "../types/user";
+import axios from "axios";
 
 //인증 관련 interface 선언
 interface State {
@@ -65,17 +66,31 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     authenticated: false,
     loading: true,
   });
-  console.log('state',state);
+  console.log("state", state);
   const dispatch = (type: LOGIN_ACTION, payload?: any) => {
     defaultDispatch({ type, payload });
   };
+
+  useEffect(() => {
+    async function loadUser() {
+      try {
+        const res = await axios.get("/auth/me");
+        dispatch(LOGIN_ACTION.LOGIN, res.data);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        dispatch(LOGIN_ACTION.STOP_LOADING);
+      }
+    }
+    loadUser();
+  }, []);
+
   return (
     <DispatchContext.Provider value={dispatch}>
       <StateContext.Provider value={state}>{children}</StateContext.Provider>
     </DispatchContext.Provider>
   );
 };
-
 
 //실질적으로 component, page 에서 사용 할
 export const useAuthState = () => useContext(StateContext);
