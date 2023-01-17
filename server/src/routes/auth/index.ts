@@ -1,6 +1,3 @@
-import Login from "./login";
-import Signup from "./signup";
-
 import express from "express";
 import login from "./login";
 import signup from "./signup";

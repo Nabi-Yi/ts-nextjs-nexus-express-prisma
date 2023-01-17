@@ -4,7 +4,7 @@ import { hash } from "bcryptjs";
 import { validateSignUp } from "../../utils/validator";
 import { validate } from "superstruct";
 
-export default async function signup(req: Request, res: Response) {
+async function signup(req: Request, res: Response) {
   try {
     let errors: any = {};
     const { email, password, nickName } = req.body;
@@ -61,4 +61,6 @@ export default async function signup(req: Request, res: Response) {
   }
 }
 const router = Router();
-router.post("/signup", signup);
+router.post("/", signup);
+
+export default router;

@@ -5,8 +5,9 @@ import { validateLogin } from "../../utils/validator";
 import { assert } from "superstruct";
 import { sign } from "jsonwebtoken";
 import { serialize } from "cookie";
+import exp from "constants";
 
-export default async function login(req: Request, res: Response) {
+async function login(req: Request, res: Response) {
   try {
     const { email, password } = req.body;
     assert({ email, password }, validateLogin);
@@ -58,4 +59,5 @@ export default async function login(req: Request, res: Response) {
 }
 
 const router = Router();
-router.post("/login", login);
+router.post("/", login);
+export default router;
