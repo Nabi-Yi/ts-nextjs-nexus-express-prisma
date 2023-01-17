@@ -11,14 +11,6 @@ async function createSub(req: Request, res: Response, next: NextFunction) {
     const { title, description } = req.body;
     assert({ title, description }, validateCreateSub);
 
-    const checkTitle = await prisma.sub.findUnique({
-      where:{
-        title
-      }
-    });
-    errors.title = " title is already in use";
-    if(checkTitle) return res.status(400).json(errors);
-
     const createdSub = await prisma.sub.create({
       data: {
         title,
@@ -34,6 +26,11 @@ async function createSub(req: Request, res: Response, next: NextFunction) {
       return res
         .status(400)
         .json({ validation: `${error.key}를 확인해주세요` });
+    }
+    if (error.code === 'P2002') {
+      return res
+          .status(400)
+          .json({ error: '이미 사용중인 title입니다' });
     }
   }
 }
