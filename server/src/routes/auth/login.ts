@@ -42,7 +42,7 @@ export default async function login(req: Request, res: Response) {
         path: "/",
       })
     );
-    return res.status(200).json(token);
+    return res.status(200).json({ userId:loginUser.userId, email:loginUser.email });
   } catch (error: any) {
     console.log(error);
     if (error.key) {
