@@ -1,5 +1,5 @@
 import {PrismaClient, Prisma, User} from '@prisma/client'
-import {assert, object, string, size, refine} from 'superstruct'
+import {assert, object, string, size, refine, nonempty} from 'superstruct'
 import isEmail from 'isemail'
 
 const prisma = new PrismaClient()
@@ -24,6 +24,10 @@ export const validateLogin= object({
     password: size(string(), 7, 30),
 })
 
+export const validateCreateSub = object({
+    title: size(string(), 2, 30),
+    description: nonempty(string())
+})
 type validateSignUp = Omit<Prisma.UserCreateArgs['data'], 'id'>
 
 // Signup function

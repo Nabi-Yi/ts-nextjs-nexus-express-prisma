@@ -15,11 +15,11 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  email     String @unique @db.VarChar(50)
+  email     String  @unique @db.VarChar(50)
   firstName String? @db.VarChar(20)
   lastName  String? @db.VarChar(20)
-  nickName  String @unique @db.VarChar(20)
-  password  String @db.Text
+  nickName  String  @unique @db.VarChar(20)
+  password  String  @db.Text
   age       Int?
 
   post        Post[]
@@ -36,7 +36,7 @@ model Sub {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  title       String  @db.VarChar(50)
+  title       String  @unique @db.VarChar(50)
   description String? @db.Text
   bannerUrl   String? @db.VarChar(255)
   imageUrl    String? @db.VarChar(255)

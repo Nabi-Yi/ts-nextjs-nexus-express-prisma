@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import authRoutes from "./routes/auth/index";
+import subRoutes from "./routes/sub/sub"
 import dotenv from "dotenv";
 
 import cors from "cors";
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use(morgan("dev"));
 
 app.use("/api/auth", authRoutes);
+app.use("/api/sub", subRoutes)
 
 app.get("/", (req, res) => res.send("running"));
 
