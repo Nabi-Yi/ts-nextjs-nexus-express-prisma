@@ -8,7 +8,7 @@ export default function NavBar(){
     const dispatch = useAuthDispatch();
 
     const handleLogout = () => {
-        axios.post("/auth/logout")
+        axios.post("/auth/logout",{withCredentials: true})
             .then(() => {
                 dispatch(LOGIN_ACTION.LOGOUT);
                 window.location.reload();

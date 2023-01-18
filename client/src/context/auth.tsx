@@ -66,7 +66,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     authenticated: false,
     loading: true,
   });
-  console.log("state", state);
   const dispatch = (type: LOGIN_ACTION, payload?: any) => {
     defaultDispatch({ type, payload });
   };
