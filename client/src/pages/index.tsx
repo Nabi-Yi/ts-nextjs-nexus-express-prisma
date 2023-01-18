@@ -2,6 +2,7 @@ import Link from "next/link";
 import axios from "axios";
 import { Sub } from "../types/user";
 import { useEffect, useState } from "react";
+import Image from 'next/image'
 
 export default function Home() {
   const [topSubs, setTopSubs] = useState<[Sub]>();
@@ -37,7 +38,17 @@ export default function Home() {
                 key={sub.title}
                 className="flex items-center px-4 py-2 text-xs border-b"
               >
-                <Link href={`/r/${sub.title}`}> `/r/{sub.title}`</Link>
+                <Link href={`/r/${sub.title}`}>
+                    <Image
+                        src={sub.imageUrl}
+                        className="rounded-full cursor-pointer"
+                        alt="Sub"
+                        width={24}
+                        height={24}/>
+                </Link>
+                <Link href={`/r/${sub.title}`} className='ml-2 font-bold hover:cursor-pointer'>
+                    /r/{sub.title}
+                </Link>
                 <p className="ml-auto font-md">{sub._count.post}</p>
               </div>
             ))}

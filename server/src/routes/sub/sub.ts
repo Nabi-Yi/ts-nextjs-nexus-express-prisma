@@ -4,6 +4,7 @@ import { validateCreateSub } from "../../utils/validator";
 import { prisma } from "../../prisma";
 import { verify } from "jsonwebtoken";
 import userMiddleware from "../../middlewares/userMiddleware";
+import {Sub} from "@prisma/client";
 
 async function createSub(req: Request, res: Response, next: NextFunction) {
   try {
@@ -42,12 +43,14 @@ async function getTopSubs(req: Request, res: Response) {
       },
     },
     include:{
-      _count:true
+      _count : true
     }
   });
+  topSubs.map((sub) => {
+    if(!sub.imageUrl) sub.imageUrl = 'https://www.gravatar.com/avatar?d=mp&f=y';
+  })
   return res.status(200).json(topSubs);
 }
-
 const router = Router();
 router.post("/", userMiddleware, createSub);
 router.get("/topSubs", getTopSubs);
