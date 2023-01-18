@@ -36,7 +36,7 @@ async function login(req: Request, res: Response) {
     res.set(
       "Set-Cookie",
       serialize("Authorization", token, {
-        httpOnly: true,
+        httpOnly: false,
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
         maxAge: 60 * 60 * 24 * 7,
