@@ -15,7 +15,7 @@ async function createSub(req: Request, res: Response, next: NextFunction) {
       data: {
         title,
         description,
-        userId: res.locals.userId
+        userId: res.locals.userId,
       },
     });
 
@@ -27,15 +27,29 @@ async function createSub(req: Request, res: Response, next: NextFunction) {
         .status(400)
         .json({ validation: `${error.key}를 확인해주세요` });
     }
-    if (error.code === 'P2002') {
-      return res
-          .status(400)
-          .json({ error: '이미 사용중인 title입니다' });
+    if (error.code === "P2002") {
+      return res.status(400).json({ error: "이미 사용중인 title입니다" });
     }
   }
 }
 
+async function getTopSubs(req: Request, res: Response) {
+  const topSubs = await prisma.sub.findMany({
+    take: 5,
+    orderBy: {
+      post: {
+        _count: "desc",
+      },
+    },
+    include:{
+      _count:true
+    }
+  });
+  return res.status(200).json(topSubs);
+}
+
 const router = Router();
 router.post("/", userMiddleware, createSub);
+router.get("/topSubs", getTopSubs);
 
 export default router;
