@@ -4,7 +4,7 @@ import { validateCreateSub } from "../../utils/validator";
 import { prisma } from "../../prisma";
 import { verify } from "jsonwebtoken";
 import userMiddleware from "../../middlewares/userMiddleware";
-import {Sub} from "@prisma/client";
+import { Sub } from "@prisma/client";
 
 async function createSub(req: Request, res: Response, next: NextFunction) {
   try {
@@ -42,17 +42,37 @@ async function getTopSubs(req: Request, res: Response) {
         _count: "desc",
       },
     },
-    include:{
-      _count : true
-    }
+    include: {
+      _count: true,
+    },
   });
   topSubs.map((sub) => {
-    if(!sub.imageUrl) sub.imageUrl = 'https://www.gravatar.com/avatar?d=mp&f=y';
-  })
+    if (!sub.imageUrl)
+      sub.imageUrl = "https://www.gravatar.com/avatar?d=mp&f=y";
+  });
   return res.status(200).json(topSubs);
 }
+
+async function getSubDetails(req: Request, res: Response) {
+  try {
+    const title = req.params.title;
+    const subDetails = await prisma.sub.findUniqueOrThrow({
+      where: {
+        title,
+      },
+      include: {
+        post: true,
+      },
+    });
+    return res.status(200).json(subDetails);
+  } catch (error) {
+    return res.status(404).json("cannot find sub");
+  }
+}
+
 const router = Router();
-router.post("/", userMiddleware, createSub);
+router.get("/:title", userMiddleware, getSubDetails);
 router.get("/topSubs", getTopSubs);
+router.post("/", userMiddleware, createSub);
 
 export default router;
